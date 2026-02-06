@@ -1,0 +1,15 @@
+@baseurl = http://localhost:3000
+
+### Health check (si tienes endpoint de salud)
+
+// GET {{baseurl}}/health
+
+
+GET {{baseurl}}/api/cursos/programacion
+
+
+
+
+
+
+
