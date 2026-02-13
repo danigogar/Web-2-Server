@@ -2,10 +2,10 @@
 
 ### Health check (si tienes endpoint de salud)
 
-// GET {{baseurl}}/health
+GET {{baseurl}}/health
 
 
-GET {{baseurl}}/api/cursos/programacion
+// GET {{baseurl}}/api/cursos/programacion
 
 
 
