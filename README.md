@@ -1,13 +1,13 @@
-# Web II - Server Side
+# Web II - Servidor
 
 Ejercicios de desarrollo web backend con Node.js y Express.
 
 ## 📂 Contenido
 
 - `ejercicios/` - Prácticas del curso
-- `api/` - Apuntes y recursos
+- `mi-api/` - Prueba Inicial
 
-## Stack
+## 🛠️ Stack
 
 Node.js • Express • MongoDB • Zod
 
