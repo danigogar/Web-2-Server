@@ -10,7 +10,7 @@ export const validate = (schema) => async (req, res, next) => {
         next();
     } catch (error) {
         if (error instanceof ZodError) {
-            const errors = error.errors.map(err => ({
+            const errors = error.issues.map(err => ({  // ← Cambiado de .errors a .issues
                 campo: err.path.join('.'),
                 mensaje: err.message
             }));

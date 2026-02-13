@@ -1,6 +1,6 @@
 // REVISAR
 
-import { todos, nextId } from '../data/todos.js';
+import { todos } from '../data/todos.js';
 import { ApiError } from '../middleware/errorHandler.js';
 
 // GET /api/todos
@@ -8,9 +8,11 @@ export const getAll = (req, res) => {
     let resultado = [...todos];
     const { completed, priority } = req.query;
 
+    // REVISAR, NO VA BIEN
     // Filtrar por estado completado
     if (completed !== undefined) {
-        resultado = resultado.filter(t => t.completed === completed);
+        const isCompleted = completed === 'true'; // Convertir string a boolean SOLUCIONADO
+        resultado = resultado.filter(t => t.completed === isCompleted);
     }
 
     // Filtrar por prioridad
@@ -37,8 +39,11 @@ export const getById = (req, res) => {
 export const create = (req, res) => {
     const { title, description, priority } = req.body;
 
+    // Calcular el siguiente ID basándose en el array
+    const newId = todos.length > 0 ? Math.max(...todos.map(t => t.id)) + 1 : 1;
+
     const nuevoTodo = {
-        id: nextId++,
+        id: newId,
         title,
         description: description || '',
         completed: false,
@@ -86,6 +91,14 @@ export const remove = (req, res) => {
     todos.splice(index, 1);
 
     res.status(204).end();
+
+    // OTRA OPCIÓN DE RESPUESTA, dejo la primera porque era la de la plantilla
+    /* 
+    res.json({
+        success: true,
+        message: 'Tarea eliminada exitosamente'
+    });
+    */
 };
 
 // PATCH /api/todos/:id/toggle
