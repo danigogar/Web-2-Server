@@ -41,6 +41,3 @@ export let todos = [
     createdAt: new Date('2026-02-13T20:00:00Z').toISOString()
   }
 ];
-
-// Contador para IDs autoincrementales
-export let nextId = 6;

@@ -12,7 +12,6 @@ export const createTodoSchema = z.object({
       errorMap: () => ({ message: 'La prioridad debe ser: low, medium o high' })
     })
       .optional()
-      .default('medium')
   })
 });
 

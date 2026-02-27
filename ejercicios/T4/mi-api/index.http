@@ -165,7 +165,7 @@ PATCH {{apiUrl}}/3/toggle
 ###############################################
 
 ### Eliminar tarea 5
-DELETE {{apiUrl}}/4
+DELETE {{apiUrl}}/5
 
 ### Eliminar tarea inexistente (debería dar 404)
 DELETE {{apiUrl}}/999
