@@ -1,0 +1,159 @@
+### Variables
+@baseUrl = http://localhost:3000/api
+@movieId = 69a1c271684edeb42c373242
+
+# ─────────────────────────────────────────────────────────────
+# HEALTH CHECK
+# ─────────────────────────────────────────────────────────────
+
+### Health check
+GET http://localhost:3000/health
+
+
+# ─────────────────────────────────────────────────────────────
+# CRUD DE PELÍCULAS
+# ─────────────────────────────────────────────────────────────
+
+### Listar todas las películas
+GET {{baseUrl}}/movies
+
+### Listar películas con filtro de género
+GET {{baseUrl}}/movies?genre=comedy
+
+### Listar películas con búsqueda por título (BONUS)
+GET {{baseUrl}}/movies?search=matrix
+
+### Listar con paginación (BONUS)
+GET {{baseUrl}}/movies?page=1&limit=5
+
+### Obtener película por ID
+GET {{baseUrl}}/movies/{{movieId}}
+
+### Crear nueva película
+POST {{baseUrl}}/movies
+Content-Type: application/json
+
+{
+  "title": "The Matrix",
+  "director": "Lana Wachowski",
+  "year": 1999,
+  "genre": "scifi",
+  "copies": 3
+}
+
+### Crear otra película
+POST {{baseUrl}}/movies
+Content-Type: application/json
+
+{
+  "title": "The Dark Knight",
+  "director": "Christopher Nolan",
+  "year": 2008,
+  "genre": "action",
+  "copies": 5
+}
+
+### Crear comedia
+POST {{baseUrl}}/movies
+Content-Type: application/json
+
+{
+  "title": "Some Like It Hot",
+  "director": "Billy Wilder",
+  "year": 1959,
+  "genre": "comedy",
+  "copies": 2
+}
+
+### Actualizar película
+PUT {{baseUrl}}/movies/{{movieId}}
+Content-Type: application/json
+
+{
+  "title": "The Matrix Reloaded",
+  "director": "Lana Wachowski",
+  "year": 2003,
+  "genre": "scifi",
+  "copies": 4
+}
+
+### Eliminar película
+DELETE {{baseUrl}}/movies/{{movieId}}
+
+
+# ─────────────────────────────────────────────────────────────
+# ALQUILER Y DEVOLUCIÓN
+# ─────────────────────────────────────────────────────────────
+
+### Alquilar película
+PATCH {{baseUrl}}/movies/{{movieId}}/rent
+
+### Devolver película
+PATCH {{baseUrl}}/movies/{{movieId}}/return
+
+
+# ─────────────────────────────────────────────────────────────
+# ESTADÍSTICAS
+# ─────────────────────────────────────────────────────────────
+
+### Top 5 películas más alquiladas
+GET {{baseUrl}}/movies/stats/top
+
+### Películas disponibles (BONUS)
+GET {{baseUrl}}/movies/available
+
+
+# ─────────────────────────────────────────────────────────────
+# CARÁTULAS
+# ─────────────────────────────────────────────────────────────
+
+### Subir carátula
+PATCH {{baseUrl}}/movies/{{movieId}}/cover
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="cover"; filename="cover.jpg"
+Content-Type: image/jpeg
+
+< ./test-cover.jpg
+--boundary--
+
+### Obtener carátula
+GET {{baseUrl}}/movies/{{movieId}}/cover
+
+### También accesible directamente por nombre de archivo
+# GET http://localhost:3000/uploads/cover-XXXXXXXXXX.jpg
+
+
+# ─────────────────────────────────────────────────────────────
+# BONUS: VALORACIONES
+# ─────────────────────────────────────────────────────────────
+
+### Valorar película (1-5)
+PATCH {{baseUrl}}/movies/{{movieId}}/rate
+Content-Type: application/json
+
+{
+  "rating": 5
+}
+
+
+# ─────────────────────────────────────────────────────────────
+# TESTS DE ERROR (para comprobar validaciones)
+# ─────────────────────────────────────────────────────────────
+
+### Crear película con datos inválidos (debe dar 400)
+POST {{baseUrl}}/movies
+Content-Type: application/json
+
+{
+  "title": "A",
+  "year": 1800,
+  "genre": "western"
+}
+
+### ID inválido (debe dar 400)
+GET {{baseUrl}}/movies/id-no-valido
+
+### Película inexistente (debe dar 404)
+GET {{baseUrl}}/movies/000000000000000000000000
