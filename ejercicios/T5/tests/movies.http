@@ -1,6 +1,7 @@
 ### Variables
 @baseUrl = http://localhost:3000/api
 @movieId = 69a1c271684edeb42c373242
+# Cuando hagas las pruebas usa el consideres oportuno en basea a lo generado
 
 # ─────────────────────────────────────────────────────────────
 # HEALTH CHECK
