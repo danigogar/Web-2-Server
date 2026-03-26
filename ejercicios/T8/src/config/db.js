@@ -5,15 +5,26 @@ const dbConnect = async (uri) => {
 
   try {
     await mongoose.connect(DB_URI, { appName: 'podcasthub-api' })
-    console.log('✅ Conectado a MongoDB')
-  } catch (error) {
+    if (process.env.NODE_ENV !== 'test') {
+      console.log('✅ Conectado a MongoDB')
+    }
+    return mongoose.connection
+  } 
+  
+  catch (error) {
     console.error('❌ Error conectando a MongoDB:', error.message)
-    process.exit(1)
+    if (process.env.NODE_ENV !== 'test') {
+      process.exit(1)
+    }
+    throw error
   }
 }
 
+// Solo mostrar warnings si no estamos en test, para que no se vean en los Tests
 mongoose.connection.on('disconnected', () => {
-  console.warn('⚠️  Desconectado de MongoDB')
+  if (process.env.NODE_ENV !== 'test') {
+    console.warn('⚠️  Desconectado de MongoDB')
+  }
 })
 
 process.on('SIGINT', async () => {
