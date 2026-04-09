@@ -1,0 +1,41 @@
+﻿### Variables
+@baseUrl = http://localhost:3000/api
+
+### Health Check
+GET http://localhost:3000/health
+
+### Registrar usuario
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "test@ejemplo.com",
+  "name": "Usuario Test",
+  "password": "test123456"
+}
+
+### Login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@biblioteca.com",
+  "password": "admin123"
+}
+
+### Listar libros
+GET {{baseUrl}}/books
+
+### Solicitar préstamo
+POST {{baseUrl}}/loans/1
+Authorization: Bearer {{token}}
+
+### Crear reseña
+POST {{baseUrl}}/books/1/reviews
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "rating": 5,
+  "comment": "Excelente libro"
+}
