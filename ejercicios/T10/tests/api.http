@@ -1,0 +1,47 @@
+﻿### Variables
+@baseUrl = http://localhost:3000/api
+
+### Health Check
+GET http://localhost:3000/health
+
+### Registrar usuario
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Usuario Test",
+  "email": "test@ejemplo.com",
+  "password": "123456"
+}
+
+### Login
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@ejemplo.com",
+  "password": "123456"
+}
+
+### Listar usuarios
+GET {{baseUrl}}/auth/users
+Authorization: Bearer {{login.response.body.token}}
+
+### Crear sala
+POST {{baseUrl}}/rooms
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "name": "general",
+  "description": "Sala general de chat"
+}
+
+### Listar salas
+GET {{baseUrl}}/rooms
+Authorization: Bearer {{login.response.body.token}}
+
+### Buscar mensajes
+GET {{baseUrl}}/rooms/ID_DE_LA_SALA/messages?search=hola
+Authorization: Bearer {{login.response.body.token}}

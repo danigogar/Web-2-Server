@@ -1,0 +1,75 @@
+﻿### Variables
+@baseUrl = http://localhost:3000/api
+
+### Health Check
+GET http://localhost:3000/health
+
+### ==================== AUTH ====================
+
+### Registrar usuario 1
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Usuario Test",
+  "email": "test@ejemplo.com",
+  "password": "123456"
+}
+
+### Registrar usuario 2
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Usuario Test 2",
+  "email": "test2@ejemplo.com",
+  "password": "123456"
+}
+
+### Login
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@ejemplo.com",
+  "password": "123456"
+}
+
+### Login 2
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test2@ejemplo.com",
+  "password": "123456"
+}
+
+### Obtener mi perfil
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{login.response.body.token}}
+
+### ==================== ROOMS ====================
+
+### Listar salas
+GET {{baseUrl}}/rooms
+Authorization: Bearer {{login.response.body.token}}
+
+### Crear sala
+POST {{baseUrl}}/rooms
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "name": "general",
+  "description": "Sala general de chat"
+}
+
+### Obtener mensajes de una sala
+GET {{baseUrl}}/rooms/ID_DE_LA_SALA/messages
+Authorization: Bearer {{login.response.body.token}}
+
+### Obtener mensajes de una sala
+GET {{baseUrl}}/rooms/69d943523da1606d025c8e60/messages
+Authorization: Bearer {{login.response.body.token}}
