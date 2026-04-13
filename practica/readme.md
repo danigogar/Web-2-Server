@@ -15,11 +15,15 @@ API REST para la gestión de usuarios y compañías, desarrollada con Node.js, E
 | **Seguridad** | Helmet, CORS, express-rate-limit |
 | **Eventos** | EventEmitter nativo |
 
+---
+
 ## 📋 Requisitos previos
 
 - Node.js 22 o superior
 - npm 10 o superior
 - Cuenta en [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) (gratis)
+
+---
 
 ## 🔧 Instalación y configuración
 
@@ -55,6 +59,8 @@ JWT_REFRESH_EXPIRES=7d
 MAX_FILE_SIZE=5242880
 PUBLIC_URL=http://localhost:3000
 ```
+
+---
 
 ### 4. Iniciar el servidor
 
@@ -363,5 +369,5 @@ MIT
 ---
 
 ## 👨‍💻 Autor
-Tu Daniel - @danigogar
+Daniel González - @danigogar
 
