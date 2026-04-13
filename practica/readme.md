@@ -95,7 +95,7 @@ bildyapp-api/
 │   │   └── user.validator.js     # Esquemas de validación Zod
 │   ├── app.js                    # Configuración de Express
 │   └── index.js                  # Punto de entrada
-├── uploads/                       # Archivos subidos (logo)
+├── uploads/                      # Archivos subidos (logo)
 ├── tests/
 │   └── api.http                  # Ejemplos de peticiones REST
 ├── .env.example
@@ -152,9 +152,7 @@ Content-Type: application/json
 
 ```
 #### Respuesta (201 Created):
-```
-
-json
+```json
 {
   "user": {
     "id": "67f...",
@@ -170,8 +168,7 @@ json
 
 ### Login
 
-```
-http
+```http
 POST {{baseUrl}}/user/login
 Content-Type: application/json
 
@@ -183,8 +180,7 @@ Content-Type: application/json
 ```
 #### Respuesta (200 OK):
 
-```
-json
+```json
 {
   "user": {
     "id": "67f...",
@@ -202,9 +198,7 @@ json
 
 ### Onboarding - Datos personales
 
-```
-
-http
+```http
 PUT {{baseUrl}}/user/register
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
@@ -217,9 +211,7 @@ Content-Type: application/json
 
 ```
 ### Onboarding - Compañía (empresa normal)
-```
-
-http
+```http
 PATCH {{baseUrl}}/user/company
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
@@ -239,9 +231,7 @@ Content-Type: application/json
 
 ```
 ### Onboarding - Compañía (autónomo)
-```
-
-http
+```http
 PATCH {{baseUrl}}/user/company
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
@@ -252,9 +242,7 @@ Content-Type: application/json
 
 ```
 ### Subir logo
-```
-
-http
+```http
 PATCH {{baseUrl}}/user/logo
 Authorization: Bearer {{accessToken}}
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
@@ -268,17 +256,13 @@ Content-Type: image/png
 
 ```
 ### Obtener usuario autenticado
-```
-
-http
+```http
 GET {{baseUrl}}/user
 Authorization: Bearer {{accessToken}}
 
 ```
 #### Respuesta (200 OK) - Incluye virtual fullName y Company poblada:
-```
-
-json
+```json
 {
   "user": {
     "id": "67f...",
@@ -300,9 +284,7 @@ json
 
 ```
 ### Invitar compañero (solo admin)
-```
-
-http
+```http
 POST {{baseUrl}}/user/invite
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
@@ -315,9 +297,7 @@ Content-Type: application/json
 
 ```
 #### Respuesta (201 Created):
-```
-
-json
+```json
 {
   "message": "Usuario invitado correctamente",
   "user": {
@@ -332,9 +312,7 @@ json
 
 ```
 ### Cambiar contraseña (Bonus)
-```
-
-http
+```http
 PUT {{baseUrl}}/user/password
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
@@ -346,17 +324,13 @@ Content-Type: application/json
 
 ```
 ### Eliminar usuario (soft delete)
-```
-
-http
+```http
 DELETE {{baseUrl}}/user?soft=true
 Authorization: Bearer {{accessToken}}
 
 ```
 #### Respuesta (200 OK):
-```
-
-json
+```json
 {
   "message": "Usuario eliminado (soft delete)"
 }
