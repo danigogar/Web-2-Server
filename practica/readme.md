@@ -37,7 +37,7 @@ npm install
 
 ### 3. Configurar variables de entorno
 Crea un archivo .env en la raíz del proyecto:
-
+```
 env
 # Servidor
 PORT=3000
@@ -54,6 +54,7 @@ JWT_REFRESH_EXPIRES=7d
 # Uploads
 MAX_FILE_SIZE=5242880
 PUBLIC_URL=http://localhost:3000
+```
 
 ### 4. Iniciar el servidor
 
