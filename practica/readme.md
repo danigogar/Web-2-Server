@@ -28,11 +28,14 @@ API REST para la gestión de usuarios y compañías, desarrollada con Node.js, E
 ```bash
 git clone https://github.com/tu-usuario/bildyapp-api.git
 cd bildyapp-api
+```
 
-2. Instalar dependencias
-bash
+### 2. Instalar dependencias
+```bash
 npm install
-3. Configurar variables de entorno
+```
+
+### 3. Configurar variables de entorno
 Crea un archivo .env en la raíz del proyecto:
 
 env
@@ -51,10 +54,16 @@ JWT_REFRESH_EXPIRES=7d
 # Uploads
 MAX_FILE_SIZE=5242880
 PUBLIC_URL=http://localhost:3000
-4. Iniciar el servidor
-bash
+
+### 4. Iniciar el servidor
+
+```bash
 npm run dev
 El servidor correrá en http://localhost:3000
+
+```
+
+---
 
 ## 📁 Estructura del proyecto
 
@@ -92,7 +101,7 @@ bildyapp-api/
 ├── package.json
 └── README.md
 
-
+---
 
 ## 📖 Endpoints de la API
 
@@ -123,6 +132,8 @@ bildyapp-api/
 | PUT | `/api/user/password` | Cambiar contraseña (Bonus) | ✅ Sí (Bearer) |
 | POST | `/api/user/invite` | Invitar compañero (solo admin) | ✅ Sí (Bearer, rol admin) |
 
+---
+
 ## 🧪 Ejemplos de peticiones
 
 ### Registro
@@ -136,7 +147,9 @@ Content-Type: application/json
   "password": "12345678"
 }
 
-Respuesta (201 Created):
+```
+#### Respuesta (201 Created):
+```
 
 json
 {
@@ -149,7 +162,12 @@ json
   "accessToken": "eyJhbGciOiJIUzI1NiIs...",
   "refreshToken": "a1b2c3d4e5f6..."
 }
-Login
+
+```
+
+### Login
+
+```
 http
 POST {{baseUrl}}/user/login
 Content-Type: application/json
@@ -158,8 +176,11 @@ Content-Type: application/json
   "email": "usuario@ejemplo.com",
   "password": "12345678"
 }
-Respuesta (200 OK):
 
+```
+#### Respuesta (200 OK):
+
+```
 json
 {
   "user": {
@@ -173,7 +194,13 @@ json
   "accessToken": "eyJhbGciOiJIUzI1NiIs...",
   "refreshToken": "a1b2c3d4e5f6..."
 }
-Onboarding - Datos personales
+
+```
+
+### Onboarding - Datos personales
+
+```
+
 http
 PUT {{baseUrl}}/user/register
 Authorization: Bearer {{accessToken}}
@@ -184,7 +211,11 @@ Content-Type: application/json
   "lastName": "Pérez García",
   "nif": "12345678A"
 }
-Onboarding - Compañía (empresa normal)
+
+```
+### Onboarding - Compañía (empresa normal)
+```
+
 http
 PATCH {{baseUrl}}/user/company
 Authorization: Bearer {{accessToken}}
@@ -202,7 +233,11 @@ Content-Type: application/json
     "province": "Madrid"
   }
 }
-Onboarding - Compañía (autónomo)
+
+```
+### Onboarding - Compañía (autónomo)
+```
+
 http
 PATCH {{baseUrl}}/user/company
 Authorization: Bearer {{accessToken}}
@@ -211,7 +246,11 @@ Content-Type: application/json
 {
   "isFreelance": true
 }
-Subir logo
+
+```
+### Subir logo
+```
+
 http
 PATCH {{baseUrl}}/user/logo
 Authorization: Bearer {{accessToken}}
@@ -223,11 +262,18 @@ Content-Type: image/png
 
 < ./logo.png
 ------WebKitFormBoundary--
-Obtener usuario autenticado
+
+```
+### Obtener usuario autenticado
+```
+
 http
 GET {{baseUrl}}/user
 Authorization: Bearer {{accessToken}}
-Respuesta (200 OK) - Incluye virtual fullName y Company poblada:
+
+```
+#### Respuesta (200 OK) - Incluye virtual fullName y Company poblada:
+```
 
 json
 {
@@ -248,7 +294,11 @@ json
     }
   }
 }
-Invitar compañero (solo admin)
+
+```
+### Invitar compañero (solo admin)
+```
+
 http
 POST {{baseUrl}}/user/invite
 Authorization: Bearer {{accessToken}}
@@ -259,7 +309,10 @@ Content-Type: application/json
   "name": "Carlos",
   "lastName": "López Ruiz"
 }
-Respuesta (201 Created):
+
+```
+#### Respuesta (201 Created):
+```
 
 json
 {
@@ -273,7 +326,11 @@ json
     "temporaryPassword": "928253"
   }
 }
-Cambiar contraseña (Bonus)
+
+```
+### Cambiar contraseña (Bonus)
+```
+
 http
 PUT {{baseUrl}}/user/password
 Authorization: Bearer {{accessToken}}
@@ -283,31 +340,51 @@ Content-Type: application/json
   "currentPassword": "12345678",
   "newPassword": "87654321"
 }
-Eliminar usuario (soft delete)
+
+```
+### Eliminar usuario (soft delete)
+```
+
 http
 DELETE {{baseUrl}}/user?soft=true
 Authorization: Bearer {{accessToken}}
-Respuesta (200 OK):
+
+```
+#### Respuesta (200 OK):
+```
 
 json
 {
   "message": "Usuario eliminado (soft delete)"
 }
 
+```
+
+---
 
 ## 📦 Scripts disponibles
-Comando	Descripción
-npm run dev	Iniciar servidor con hot-reload (--watch)
-npm start	Iniciar servidor en producción
+
+| Comando | Descripción |
+|---------|-------------|
+| `npm run dev` | Iniciar servidor con hot-reload (`--watch`) |
+| `npm start` | Iniciar servidor en producción |
+
+---
 
 ## ⭐ Bonus implementados
-Bonus	Estado	Descripción
-Cambiar contraseña	✅	Endpoint PUT /api/user/password con Zod .refine() para validar que nueva ≠ actual
-discriminatedUnion	✅	Validación condicional en onboarding según isFreelance (autónomo vs empresa normal)
+
+| Bonus | Estado | Descripción |
+|-------|--------|-------------|
+| Cambiar contraseña | ✅ | Endpoint `PUT /api/user/password` con Zod `.refine()` para validar que nueva ≠ actual |
+| discriminatedUnion | ✅ | Validación condicional en onboarding según `isFreelance` (autónomo vs empresa normal) |
+
+---
 
 ## 📄 Licencia
 MIT
 
+---
+
 ## 👨‍💻 Autor
-Tu Nombre - @tu-usuario
+Tu Daniel - @danigogar
 
