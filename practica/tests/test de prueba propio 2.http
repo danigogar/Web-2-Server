@@ -9,7 +9,7 @@ POST {{baseUrl}}/user/register
 Content-Type: application/json
 
 {
-  "email": "zz@ejemplo.com",
+  "email": "a@ejemplo.com",
   "password": "12345678"
 }
 
@@ -20,7 +20,7 @@ Authorization: Bearer {{register.response.body.accessToken}}
 Content-Type: application/json
 
 {
-  "code": "417277"
+  "code": "800285"
 }
 
 ### ==================== 3. Login ====================
@@ -29,7 +29,7 @@ POST {{baseUrl}}/user/login
 Content-Type: application/json
 
 {
-  "email": "zz@ejemplo.com",
+  "email": "a@ejemplo.com",
   "password": "12345678"
 }
 
@@ -120,7 +120,7 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "email": "invitado@ejemplo.com",
+  "email": "invitadoA@ejemplo.com",
   "name": "Carlos",
   "lastName": "López Ruiz"
 }
