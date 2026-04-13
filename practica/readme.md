@@ -37,8 +37,8 @@ npm install
 
 ### 3. Configurar variables de entorno
 Crea un archivo .env en la raíz del proyecto:
-```
-env
+
+```env
 # Servidor
 PORT=3000
 NODE_ENV=development
@@ -68,6 +68,7 @@ El servidor correrá en http://localhost:3000
 
 ## 📁 Estructura del proyecto
 
+```
 bildyapp-api/
 ├── src/
 │   ├── config/
@@ -101,6 +102,7 @@ bildyapp-api/
 ├── .gitignore
 ├── package.json
 └── README.md
+```
 
 ---
 
