@@ -4,8 +4,9 @@ Ejercicios de desarrollo web backend con Node.js y Express.
 
 ## 📂 Contenido
 
-- `ejercicios/` - Prácticas del curso
+- `ejercicios/` - Prácticas contínuas del curso
 - `mi-api/` - Prueba Inicial
+- `practica/` - Práctica Intermedia
 
 ## 🛠️ Stack
 
