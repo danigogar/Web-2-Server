@@ -1,0 +1,66 @@
+﻿### Variables
+@baseUrl = http://localhost:3000/api
+
+### ==================== 1. HEALTH CHECK ====================
+GET http://localhost:3000/health
+
+### ==================== 2. REGISTRO (crear usuario nuevo) ====================
+# @name register
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "nuevo@ejemplo.com",
+  "name": "Nuevo Usuario",
+  "password": "123456"
+}
+
+### ==================== 3. LOGIN (con el usuario recién creado) ====================
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "nuevo@ejemplo.com",
+  "password": "123456"
+}
+
+### ==================== 4. CONFIGURAR TOKEN ====================
+### Elige UNA de estas opciones (prueba la primera primero)
+
+# Opción A (más común)
+@authToken = {{login.response.body.token}}
+
+# Opción B (con $)
+# @authToken = {{login.response.body.$.token}}
+
+# Opción C (sin .body)
+# @authToken = {{login.response.$.token}}
+
+### ==================== 5. PETICIONES CON TOKEN ====================
+
+### Listar libros
+GET {{baseUrl}}/books
+Authorization: Bearer {{authToken}}
+
+### Solicitar préstamo
+POST {{baseUrl}}/loans/1
+Authorization: Bearer {{authToken}}
+
+### Ver mis préstamos
+GET {{baseUrl}}/loans
+Authorization: Bearer {{authToken}}
+
+### Devolver Libro (usa el ID del préstamo que te dio el paso anterior)
+PUT {{baseUrl}}/loans/1/return
+Authorization: Bearer {{authToken}}
+
+### Crear reseña
+POST {{baseUrl}}/books/1/reviews
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "rating": 5,
+  "comment": "Excelente libro"
+}
