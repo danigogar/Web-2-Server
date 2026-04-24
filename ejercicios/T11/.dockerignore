@@ -1,0 +1,15 @@
+﻿node_modules/
+.env
+.env.*
+!.env.example
+.git
+.github/
+.gitignore
+*.md
+!README.md
+tests/
+Dockerfile
+docker-compose*.yml
+.dockerignore
+prisma/*.db
+prisma/*.db-journal
