@@ -1,41 +1,50 @@
 # 📚 API de Biblioteca
 
-API REST para la gestión de una biblioteca digital, desarrollada con **Node.js**, **Express**, **Prisma** y **Supabase** (PostgreSQL).
+API REST para la gestión de una biblioteca digital, desarrollada con Node.js, Express, Prisma y Supabase (PostgreSQL).
+Incluye despliegue en Railway, Docker y CI/CD con GitHub Actions.
 
 ---
 
 ## 🚀 Características
 
-* ✅ Autenticación de usuarios con JWT
-* ✅ Gestión de libros (CRUD)
-* ✅ Sistema de préstamos (máximo 3 libros simultáneos)
-* ✅ Sistema de reseñas (solo usuarios que hayan leído el libro)
-* ✅ Control de inventario (ejemplares disponibles)
-* ✅ Base de datos en la nube con Supabase
-* ✅ ORM moderno con Prisma
-* ✅ Validación de datos con Zod
+- Autenticación de usuarios con JWT
+- Gestión de libros (CRUD)
+- Sistema de préstamos (máximo 3 libros simultáneos)
+- Sistema de reseñas (solo usuarios que hayan leído el libro)
+- Control de inventario (ejemplares disponibles)
+- Base de datos en la nube con Supabase
+- ORM moderno con Prisma
+- Validación de datos con Zod
+- Despliegue en Railway
+- Containerización con Docker
+- CI/CD con GitHub Actions
 
 ---
 
 ## 🛠️ Tecnologías utilizadas
 
-| Tecnología   | Propósito                           |
-| ------------ | ----------------------------------- |
-| **Node.js**  | Entorno de ejecución                |
-| **Express**  | Framework web                       |
-| **Prisma**   | ORM para base de datos              |
-| **Supabase** | Base de datos PostgreSQL en la nube |
-| **JWT**      | Autenticación                       |
-| **Zod**      | Validación de datos                 |
-| **bcryptjs** | Encriptación de contraseñas         |
+| Tecnología | Propósito |
+|------------|-----------|
+| Node.js | Entorno de ejecución |
+| Express | Framework web |
+| Prisma | ORM para base de datos |
+| Supabase | Base de datos PostgreSQL en la nube |
+| JWT | Autenticación |
+| Zod | Validación de datos |
+| bcryptjs | Encriptación de contraseñas |
+| Docker | Containerización |
+| GitHub Actions | CI/CD |
+| Railway | Plataforma de despliegue |
 
 ---
 
 ## 📋 Requisitos previos
 
-* Node.js (v22 o superior)
-* npm (v10 o superior)
-* Cuenta en https://supabase.com (gratis)
+- Node.js (v22 o superior)
+- npm (v10 o superior)
+- Cuenta en Supabase (gratis)
+- Cuenta en Railway (gratis)
+- Docker (opcional, para pruebas locales)
 
 ---
 
@@ -43,22 +52,17 @@ API REST para la gestión de una biblioteca digital, desarrollada con **Node.js*
 
 ### 1. Clonar el repositorio
 
-```bash
 git clone https://github.com/tu-usuario/biblioteca-api.git
 cd biblioteca-api
-```
 
 ### 2. Instalar dependencias
 
-```bash
 npm install
-```
 
 ### 3. Configurar variables de entorno
 
-Crea un archivo `.env` en la raíz del proyecto:
+Crea un archivo .env en la raíz del proyecto:
 
-```env
 # Base de datos (Transaction Pooler - puerto 6543)
 DATABASE_URL="postgresql://postgres.XXXXXXXXXXXX:TU_CONTRASEÑA@aws-0-region.pooler.supabase.com:6543/postgres?pgbouncer=true"
 
@@ -71,175 +75,211 @@ JWT_SECRET="tu-clave-secreta-muy-segura"
 # Servidor
 PORT=3000
 NODE_ENV=development
-```
-
----
 
 ### 4. Configurar Supabase
 
 1. Crea una cuenta en Supabase
 2. Crea un nuevo proyecto
-3. Ve a **Project Settings → Database**
+3. Ve a Project Settings -> Database
 4. Copia las URLs de conexión:
-
-   * Transaction Pooler (puerto 6543) → `DATABASE_URL`
-   * Session Pooler (puerto 5432) → `DIRECT_URL`
-5. Añade `?pgbouncer=true` al final de `DATABASE_URL`
-
----
+   - Transaction Pooler (puerto 6543) -> DATABASE_URL
+   - Session Pooler (puerto 5432) -> DIRECT_URL
+5. Añade ?pgbouncer=true al final de DATABASE_URL
 
 ### 5. Ejecutar migraciones
 
-```bash
 npx prisma migrate dev --name init
-```
-
----
 
 ### 6. (Opcional) Sembrar datos de prueba
 
-```bash
 npm run db:seed
-```
 
 Esto creará:
-
-* Usuarios:
-
-  * [admin@biblioteca.com](mailto:admin@biblioteca.com) (admin123)
-  * [ana@ejemplo.com](mailto:ana@ejemplo.com) (usuario123)
-
-* Libros:
-
-  * Cien años de soledad
-  * El amor en los tiempos del cólera
-  * Rayuela
-  * La sombra del viento
-
----
+- Usuarios: admin@biblioteca.com (admin123), ana@ejemplo.com (usuario123)
+- Libros: Cien años de soledad, El amor en los tiempos del cólera, Rayuela, La sombra del viento
 
 ### 7. Iniciar el servidor
 
-```bash
 npm run dev
-```
 
-Servidor disponible en:
-👉 http://localhost:3000
+Servidor disponible en: http://localhost:3000
+
+---
+
+## 🚀 Despliegue en Railway
+
+### Instalación de Railway CLI
+
+npm install -g @railway/cli
+
+### Iniciar sesión
+
+railway login
+
+### Vincular proyecto
+
+railway link
+
+(Selecciona el proyecto creado en Railway)
+
+### Desplegar
+
+railway up
+
+### Configurar variables de entorno en Railway
+
+railway variables set NODE_ENV=production
+railway variables set PORT=3000
+railway variables set DATABASE_URL="postgresql://postgres.xxxx:password@xxxx.pooler.supabase.com:6543/postgres?pgbouncer=true"
+railway variables set JWT_SECRET="tu-clave-secreta-de-32-caracteres"
+
+### Ver logs
+
+railway logs
+
+### Abrir en navegador
+
+railway open
+
+### Variables de entorno necesarias en Railway
+
+| Variable | Valor |
+|----------|-------|
+| NODE_ENV | production |
+| PORT | 3000 |
+| DATABASE_URL | URL de Supabase (con ?pgbouncer=true) |
+| JWT_SECRET | Clave secreta (32+ caracteres) |
+
+### Health check
+
+El endpoint /health está disponible para monitorización:
+
+curl https://tu-proyecto.railway.app/health
+
+Respuesta esperada:
+
+{
+  "status": "ok",
+  "database": "connected",
+  "uptime": 140.68,
+  "environment": "production"
+}
+
+---
+
+## 🐳 Docker
+
+### Construir imagen
+
+docker build -t biblioteca-api .
+
+### Ejecutar contenedor
+
+docker run -p 3000:3000 --env-file .env biblioteca-api
+
+### Desarrollo local con Docker Compose
+
+docker-compose up
+
+Esto levantará:
+- API en puerto 3000
+- PostgreSQL en puerto 5432
+
+---
+
+## ⚙️ CI/CD con GitHub Actions
+
+El proyecto incluye pipelines automatizados en la carpeta .github/workflows/
+
+### CI (Integración Continua) - archivo ci.yml
+
+- Ejecuta tests en cada push a las ramas main o develop
+- Ejecuta tests en cada pull request hacia main
+
+### CD (Despliegue Continuo) - archivo deploy.yml
+
+- Despliega automáticamente en Railway si los tests pasan
+- Solo se ejecuta en pushes a la rama main
+
+### Configurar secretos en GitHub
+
+1. Ve a tu repositorio -> Settings -> Secrets and variables -> Actions
+2. Añade el secreto RAILWAY_TOKEN
+3. Obtén el token con: railway token
 
 ---
 
 ## 📖 Endpoints de la API
 
-### 🔐 Autenticación
+### Autenticación
 
-| Método | Ruta                 | Descripción             |
-| ------ | -------------------- | ----------------------- |
-| POST   | `/api/auth/register` | Registrar nuevo usuario |
-| POST   | `/api/auth/login`    | Iniciar sesión          |
-| GET    | `/api/auth/me`       | Obtener perfil          |
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| POST | /api/auth/register | Registrar nuevo usuario |
+| POST | /api/auth/login | Iniciar sesión |
+| GET | /api/auth/me | Obtener perfil (requiere token) |
 
----
+### Libros
 
-### 📚 Libros
+| Método | Ruta | Descripción | Rol requerido |
+|--------|------|-------------|---------------|
+| GET | /api/books | Listar libros | Público |
+| GET | /api/books/:id | Obtener libro por ID | Público |
+| POST | /api/books | Crear libro | LIBRARIAN, ADMIN |
+| PUT | /api/books/:id | Actualizar libro | LIBRARIAN, ADMIN |
+| DELETE | /api/books/:id | Eliminar libro | ADMIN |
 
-| Método | Ruta             | Descripción      | Rol              |
-| ------ | ---------------- | ---------------- | ---------------- |
-| GET    | `/api/books`     | Listar libros    | Público          |
-| GET    | `/api/books/:id` | Obtener libro    | Público          |
-| POST   | `/api/books`     | Crear libro      | LIBRARIAN, ADMIN |
-| PUT    | `/api/books/:id` | Actualizar libro | LIBRARIAN, ADMIN |
-| DELETE | `/api/books/:id` | Eliminar libro   | ADMIN            |
+### Préstamos
 
----
+| Método | Ruta | Descripción | Rol requerido |
+|--------|------|-------------|---------------|
+| GET | /api/loans | Mis préstamos | Autenticado |
+| GET | /api/loans/all | Todos los préstamos | LIBRARIAN, ADMIN |
+| POST | /api/loans/:bookId | Solicitar préstamo | Autenticado |
+| PUT | /api/loans/:id/return | Devolver libro | Autenticado |
 
-### 🔄 Préstamos
+### Reseñas
 
-| Método | Ruta                    | Descripción         | Rol              |
-| ------ | ----------------------- | ------------------- | ---------------- |
-| GET    | `/api/loans`            | Mis préstamos       | Autenticado      |
-| GET    | `/api/loans/all`        | Todos los préstamos | LIBRARIAN, ADMIN |
-| POST   | `/api/loans/:bookId`    | Solicitar préstamo  | Autenticado      |
-| PUT    | `/api/loans/:id/return` | Devolver libro      | Autenticado      |
-
----
-
-### ⭐ Reseñas
-
-| Método | Ruta                     | Descripción         | Rol         |
-| ------ | ------------------------ | ------------------- | ----------- |
-| GET    | `/api/books/:id/reviews` | Reseñas de un libro | Público     |
-| POST   | `/api/books/:id/reviews` | Crear reseña        | Autenticado |
-| DELETE | `/api/reviews/:id`       | Eliminar reseña     | Autenticado |
+| Método | Ruta | Descripción | Rol requerido |
+|--------|------|-------------|---------------|
+| GET | /api/books/:id/reviews | Reseñas de un libro | Público |
+| POST | /api/books/:id/reviews | Crear reseña | Autenticado |
+| DELETE | /api/reviews/:id | Eliminar reseña | Autenticado |
 
 ---
 
 ## 📝 Reglas de negocio
 
-### 📦 Préstamos
+### Préstamos
+- Un usuario puede tener máximo 3 préstamos activos simultáneamente
+- No se puede pedir prestado el mismo libro dos veces
+- Solo se presta si hay ejemplares disponibles (available > 0)
+- Duración del préstamo: 14 días
 
-* Máximo **3 préstamos activos**
-* No repetir el mismo libro
-* Solo si `available > 0`
-* Duración: **14 días**
+### Reseñas
+- Solo una reseña por usuario por libro
+- Puntuación de 1 a 5 estrellas
+- Solo usuarios que hayan leído el libro (devuelto) pueden reseñar
 
-### ⭐ Reseñas
-
-* Una reseña por usuario por libro
-* Puntuación de **1 a 5**
-* Solo si el libro fue **devuelto**
-
-### 📚 Inventario
-
-* `copies`: total
-* `available`: disponibles
-* Préstamo → `available--`
-* Devolución → `available++`
+### Inventario
+- copies: total de ejemplares
+- available: ejemplares disponibles
+- Al prestar: available--
+- Al devolver: available++
 
 ---
 
 ## 🧪 Ejemplos de peticiones
 
-Puedes probar fácilmente la API utilizando el archivo:
+Puedes probar la API usando el archivo tests/api.http con la extensión REST Client de VS Code.
 
-📄 `tests/api.http`
+### Health check
 
-Este archivo está pensado para usarse con extensiones como **REST Client (VS Code)** o herramientas compatibles con archivos `.http`.
-
----
-
-### ▶️ Cómo usarlo
-
-1. Abre el archivo `tests/api.http`
-2. Ejecuta las peticiones en orden (de arriba hacia abajo)
-3. Asegúrate de que el servidor esté corriendo en:
-
-   ```
-   http://localhost:3000
-   ```
-
----
-
-### 🔧 Variables base
-
-```http
-@baseUrl = http://localhost:3000/api
-```
-
----
-
-### 🩺 Health check
-
-```http
 GET http://localhost:3000/health
-```
 
----
+### Registrar usuario
 
-### 👤 Registrar usuario
-
-```http
-POST {{baseUrl}}/auth/register
+POST http://localhost:3000/api/auth/register
 Content-Type: application/json
 
 {
@@ -247,109 +287,54 @@ Content-Type: application/json
   "name": "Nuevo Usuario",
   "password": "123456"
 }
-```
 
----
+### Iniciar sesión
 
-### 🔐 Iniciar sesión
-
-```http
-POST {{baseUrl}}/auth/login
+POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
   "email": "nuevo@ejemplo.com",
   "password": "123456"
 }
-```
 
----
+### Listar libros
 
-### 🎫 Configurar token
+GET http://localhost:3000/api/books
+Authorization: Bearer {{token}}
 
-El archivo ya incluye varias opciones para capturar el token automáticamente:
+### Solicitar préstamo
 
-```http
-# Opción A (recomendada)
-@authToken = {{login.response.body.token}}
+POST http://localhost:3000/api/loans/1
+Authorization: Bearer {{token}}
 
-# Opción B
-# @authToken = {{login.response.body.$.token}}
+### Crear reseña
 
-# Opción C
-# @authToken = {{login.response.$.token}}
-```
-
----
-
-### 📚 Listar libros
-
-```http
-GET {{baseUrl}}/books
-Authorization: Bearer {{authToken}}
-```
-
----
-
-### 📦 Solicitar préstamo
-
-```http
-POST {{baseUrl}}/loans/1
-Authorization: Bearer {{authToken}}
-```
-
----
-
-### 📖 Ver mis préstamos
-
-```http
-GET {{baseUrl}}/loans
-Authorization: Bearer {{authToken}}
-```
-
----
-
-### 🔄 Devolver libro
-
-```http
-PUT {{baseUrl}}/loans/1/return
-Authorization: Bearer {{authToken}}
-```
-
-> Usa el ID del préstamo obtenido en el paso anterior.
-
----
-
-### ⭐ Crear reseña
-
-```http
-POST {{baseUrl}}/books/1/reviews
-Authorization: Bearer {{authToken}}
+POST http://localhost:3000/api/books/1/reviews
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
   "rating": 5,
   "comment": "Excelente libro"
 }
-```
-
----
-
-💡 **Tip:** Si usas VS Code, instala la extensión *REST Client* para ejecutar cada petición con un solo clic.
-
 
 ---
 
 ## 📁 Estructura del proyecto
 
-```text
 biblioteca-api/
+├── .github/
+│   └── workflows/
+│       ├── ci.yml
+│       └── deploy.yml
 ├── prisma/
 │   ├── schema.prisma
 │   ├── migrations/
 │   └── seed.js
 ├── src/
 │   ├── app.js
+│   ├── index.js
 │   ├── config/
 │   │   └── prisma.js
 │   ├── controllers/
@@ -360,44 +345,48 @@ biblioteca-api/
 ├── tests/
 │   └── api.http
 ├── .env.example
+├── .dockerignore
+├── .gitignore
+├── docker-compose.yml
+├── Dockerfile
 ├── package.json
+├── RAILWAY.md
 └── README.md
-```
 
 ---
 
 ## 📦 Scripts disponibles
 
-| Comando            | Descripción               |
-| ------------------ | ------------------------- |
-| npm run dev        | Desarrollo con hot-reload |
-| npm start          | Producción                |
-| npm run db:studio  | Prisma Studio             |
-| npm run db:migrate | Nueva migración           |
-| npm run db:push    | Sin migración             |
-| npm run db:seed    | Datos de prueba           |
+| Comando | Descripción |
+|---------|-------------|
+| npm run dev | Desarrollo con hot-reload |
+| npm start | Producción |
+| npm run db:studio | Prisma Studio |
+| npm run db:migrate | Nueva migración |
+| npm run db:push | Sincronizar sin migración |
+| npm run db:seed | Datos de prueba |
+| docker build -t biblioteca-api . | Construir imagen Docker |
+| docker run -p 3000:3000 --env-file .env biblioteca-api | Ejecutar contenedor |
+| docker-compose up | Levantar entorno con BD |
 
 ---
 
 ## 🐛 Solución de problemas
 
-### ❌ Connection refused
+### Error: Connection refused
+- Asegúrate de que el servidor está corriendo con npm run dev
+- Verifica que el puerto 3000 no esté ocupado
 
-* Ejecuta `npm run dev`
-* Verifica el puerto 3000
+### Error: Authentication failed
+- Revisa que las credenciales en .env sean correctas
+- Verifica la URL de Supabase
 
-### ❌ Authentication failed
+### Error: JWT_SECRET no está definido
+- Asegúrate de que la variable JWT_SECRET está en .env
+- En Railway, configúrala en el dashboard
 
-* Revisa `.env`
-* Verifica credenciales de Supabase
-
-### ❌ P2002
-
-* Registro duplicado (email, ISBN, etc.)
-
-### ❌ Token inválido
-
-* Token expirado (7 días)
+### Error: Token inválido
+- El token expiró (7 días). Vuelve a hacer login.
 
 ---
 
@@ -413,4 +402,4 @@ Daniel González - https://github.com/danigogar
 
 ---
 
-**¡Disfruta de tu API de Biblioteca! 📚**
+**¡Disfruta de tu API de Biblioteca desplegada en Railway! 📚**
