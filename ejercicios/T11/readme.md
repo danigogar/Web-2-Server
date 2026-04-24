@@ -53,8 +53,7 @@ Incluye despliegue en Railway, Docker y CI/CD con GitHub Actions.
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/tu-usuario/biblioteca-api.git
-cd biblioteca-api
+git clone https://github.com/danigogar/Web-2-Server/edit/main/ejercicios/T11
 ```
 
 ### 2. Instalar dependencias
