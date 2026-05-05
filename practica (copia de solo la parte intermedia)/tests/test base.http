@@ -1,0 +1,135 @@
+﻿### Variables
+@baseUrl = http://localhost:3000/api
+@accessToken = {{login.response.body.accessToken}}
+@refreshToken = {{login.response.body.refreshToken}}
+
+### ==================== 1. Registro ====================
+# @name register
+POST {{baseUrl}}/user/register
+Content-Type: application/json
+
+{
+  "email": "test@ejemplo.com",
+  "password": "12345678"
+}
+
+### ==================== 2. Validación de email ====================
+### Primero consulta el verificationCode en MongoDB
+PUT {{baseUrl}}/user/validation
+Authorization: Bearer {{register.response.body.accessToken}}
+Content-Type: application/json
+
+### Poner el código de verificación en code, y cambiar el que usé yo para mis pruebas
+{
+  "code": "417277"
+}
+
+### ==================== 3. Login ====================
+# @name login
+POST {{baseUrl}}/user/login
+Content-Type: application/json
+
+{
+  "email": "test@ejemplo.com",
+  "password": "12345678"
+}
+
+### ==================== 4. Onboarding - Datos personales ====================
+PUT {{baseUrl}}/user/register
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Juan",
+  "lastName": "Pérez García",
+  "nif": "12345678A"
+}
+
+### ==================== 5. Onboarding - Compañía (empresa normal) ====================
+PATCH {{baseUrl}}/user/company
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "isFreelance": false,
+  "name": "Mi Empresa SL",
+  "cif": "B87654321",
+  "address": {
+    "street": "Calle Mayor",
+    "number": "1",
+    "postal": "28001",
+    "city": "Madrid",
+    "province": "Madrid"
+  }
+}
+
+### Onboarding - Compañía (autónomo)
+PATCH {{baseUrl}}/user/company
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "isFreelance": true
+}
+
+### ==================== 6. Logo de compañía ====================
+PATCH {{baseUrl}}/user/logo
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="logo"; filename="logo.png"
+Content-Type: image/png
+
+< ./logo.png
+------WebKitFormBoundary--
+
+### ==================== 7. Obtener usuario ====================
+GET {{baseUrl}}/user
+Authorization: Bearer {{accessToken}}
+
+### ==================== 8. Refresh token ====================
+POST {{baseUrl}}/user/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### Logout
+POST {{baseUrl}}/user/logout
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### ==================== 9. Cambiar contraseña (Bonus) ====================
+PUT {{baseUrl}}/user/password
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "currentPassword": "12345678",
+  "newPassword": "87654321"
+}
+
+### ==================== 10. Invitar compañero ====================
+POST {{baseUrl}}/user/invite
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "email": "invitado@ejemplo.com",
+  "name": "Carlos",
+  "lastName": "López Ruiz"
+}
+
+### ==================== 11. Eliminar usuario (soft) ====================
+DELETE {{baseUrl}}/user?soft=true
+Authorization: Bearer {{accessToken}}
+
+### Eliminar usuario (hard)
+DELETE {{baseUrl}}/user?soft=false
+Authorization: Bearer {{accessToken}}
