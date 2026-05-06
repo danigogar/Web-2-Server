@@ -1,12 +1,15 @@
 ﻿import multer from 'multer';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { AppError } from '../utils/AppError.js';
 import { config } from '../config/index.js';
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const uploadsPath = path.join(process.cwd(), 'uploads');
 
-const storage = multer.diskStorage({
+// Almacenamiento en disco para logos
+const diskStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadsPath);
   },
@@ -17,7 +20,11 @@ const storage = multer.diskStorage({
   }
 });
 
-const fileFilter = (req, file, cb) => {
+// Almacenamiento en memoria para firmas
+const memoryStorage = multer.memoryStorage();
+
+// Filtro para imágenes en general
+const imageFileFilter = (req, file, cb) => {
   const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
   if (allowedMimes.includes(file.mimetype)) {
@@ -27,13 +34,34 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
+// Filtro específico para firmas
+const signatureFileFilter = (req, file, cb) => {
+  const allowedMimes = ['image/jpeg', 'image/png', 'image/webp'];
+
+  if (allowedMimes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new AppError('Formato de firma no permitido. Solo JPEG, PNG o WebP', 400), false);
+  }
+};
+
+// Middleware para subir logo
 export const uploadLogo = multer({
-  storage,
-  fileFilter,
+  storage: diskStorage,
+  fileFilter: imageFileFilter,
   limits: {
     fileSize: config.maxFileSize
   }
 }).single('logo');
+
+// Middleware para subir firma
+export const uploadSignature = multer({
+  storage: memoryStorage,
+  fileFilter: signatureFileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB
+  }
+}).single('signature');
 
 export const handleUploadError = (err, req, res, next) => {
   if (err instanceof multer.MulterError) {
@@ -42,6 +70,13 @@ export const handleUploadError = (err, req, res, next) => {
         error: true,
         message: `El archivo excede el tamaño máximo de ${config.maxFileSize / 1024 / 1024}MB`,
         code: 'FILE_TOO_LARGE'
+      });
+    }
+    if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+      return res.status(400).json({
+        error: true,
+        message: 'Campo de archivo no esperado',
+        code: 'UNEXPECTED_FILE'
       });
     }
     return res.status(400).json({
