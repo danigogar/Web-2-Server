@@ -1,0 +1,12 @@
+### Health check
+GET http://localhost:3000/health
+
+### Registrar usuario
+POST http://localhost:3000/api/user/register
+Content-Type: application/json
+
+{
+  "email": "test2@ethereal.test",
+  "password": "12345678",
+  "name": "Test User"
+}

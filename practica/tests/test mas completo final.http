@@ -1,0 +1,220 @@
+### ==================== VARIABLES ====================
+@baseUrl = http://localhost:3000/api
+@userEmail = test3@ethereal.test
+@userPassword = 12345678
+
+### ==================== 1. HEALTH CHECK ====================
+GET http://localhost:3000/health
+
+### ==================== 2. REGISTRO DE USUARIO ====================
+# @name register
+POST {{baseUrl}}/user/register
+Content-Type: application/json
+
+{
+  "email": "{{userEmail}}",
+  "password": "{{userPassword}}",
+  "name": "Usuario Test"
+}
+
+### ==================== 3. GUARDAR TOKEN DEL REGISTRO ====================
+@accessToken = {{register.response.body.accessToken}}
+@refreshToken = {{register.response.body.refreshToken}}
+
+### ==================== 4. VALIDACIÓN DE EMAIL ====================
+### ⚠️ ANTES: Reemplaza "123456" con el código real que recibiste en Ethereal
+PUT {{baseUrl}}/user/validation
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "code": "489777"
+}
+
+### ==================== 5. LOGIN ====================
+# @name login
+POST {{baseUrl}}/user/login
+Content-Type: application/json
+
+{
+  "email": "{{userEmail}}",
+  "password": "{{userPassword}}"
+}
+
+### ==================== 6. ACTUALIZAR TOKEN POST-LOGIN ====================
+@loginToken = {{login.response.body.accessToken}}
+@loginRefreshToken = {{login.response.body.refreshToken}}
+@userId = {{login.response.body.user.id}}
+
+### ==================== 7. OBTENER USUARIO AUTENTICADO ====================
+GET {{baseUrl}}/user
+Authorization: Bearer {{loginToken}}
+
+### ==================== 8. ONBOARDING - DATOS PERSONALES ====================
+PUT {{baseUrl}}/user/register
+Authorization: Bearer {{loginToken}}
+Content-Type: application/json
+
+{
+  "name": "Juan",
+  "lastName": "Pérez García",
+  "nif": "12345678A"
+}
+
+### ==================== 9. ONBOARDING - COMPAÑÍA (AUTÓNOMO) ====================
+PATCH {{baseUrl}}/user/company
+Authorization: Bearer {{loginToken}}
+Content-Type: application/json
+
+{
+  "isFreelance": true
+}
+
+### ==================== 10. CLIENTES - CREAR ====================
+# @name createClient
+POST {{baseUrl}}/client
+Authorization: Bearer {{loginToken}}
+Content-Type: application/json
+
+{
+  "name": "Cliente Ejemplo SL",
+  "cif": "B87654321",
+  "email": "cliente@ejemplo.com",
+  "phone": "600123456",
+  "address": {
+    "street": "Calle Mayor",
+    "number": "1",
+    "postal": "28001",
+    "city": "Madrid",
+    "province": "Madrid"
+  }
+}
+
+### ==================== 11. CLIENTES - LISTAR ====================
+GET {{baseUrl}}/client?page=1&limit=10
+Authorization: Bearer {{loginToken}}
+
+### ==================== 12. CLIENTES - OBTENER POR ID ====================
+@clientId = {{createClient.response.body.client._id}}
+GET {{baseUrl}}/client/{{clientId}}
+Authorization: Bearer {{loginToken}}
+
+### ==================== 13. CLIENTES - ACTUALIZAR ====================
+PUT {{baseUrl}}/client/{{clientId}}
+Authorization: Bearer {{loginToken}}
+Content-Type: application/json
+
+{
+  "name": "Cliente Ejemplo Actualizado SL",
+  "phone": "600999888"
+}
+
+### ==================== 14. PROYECTOS - CREAR ====================
+# @name createProject
+POST {{baseUrl}}/project
+Authorization: Bearer {{loginToken}}
+Content-Type: application/json
+
+{
+  "clientId": "{{clientId}}",
+  "name": "Proyecto Ejemplo",
+  "projectCode": "PROJ001",
+  "email": "proyecto@ejemplo.com",
+  "notes": "Proyecto de prueba",
+  "active": true
+}
+
+### ==================== 15. PROYECTOS - LISTAR ====================
+@projectId = {{createProject.response.body.project._id}}
+GET {{baseUrl}}/project?page=1&limit=10
+Authorization: Bearer {{loginToken}}
+
+### ==================== 16. PROYECTOS - OBTENER POR ID ====================
+GET {{baseUrl}}/project/{{projectId}}
+Authorization: Bearer {{loginToken}}
+
+### ==================== 17. ALBARANES - CREAR (MATERIALES) ====================
+# @name createDeliveryNote
+POST {{baseUrl}}/deliverynote
+Authorization: Bearer {{loginToken}}
+Content-Type: application/json
+
+{
+  "format": "material",
+  "projectId": "{{projectId}}",
+  "description": "Entrega de materiales de construcción",
+  "workDate": "2026-05-06",
+  "material": "Cemento Portland",
+  "quantity": 50,
+  "unit": "kg"
+}
+
+### ==================== 18. ALBARANES - CREAR (HORAS) ====================
+POST {{baseUrl}}/deliverynote
+Authorization: Bearer {{loginToken}}
+Content-Type: application/json
+
+{
+  "format": "hours",
+  "projectId": "{{projectId}}",
+  "description": "Horas de trabajo en obra",
+  "workDate": "2026-05-06",
+  "workers": [
+    { "name": "Juan Pérez", "hours": 8 },
+    { "name": "María López", "hours": 8 }
+  ]
+}
+
+### ==================== 19. ALBARANES - LISTAR ====================
+GET {{baseUrl}}/deliverynote?page=1&limit=10
+Authorization: Bearer {{loginToken}}
+
+### ==================== 20. ALBARANES - LISTAR CON FILTROS ====================
+GET {{baseUrl}}/deliverynote?format=material&signed=false&sort=-workDate
+Authorization: Bearer {{loginToken}}
+
+### ==================== 21. ALBARANES - OBTENER POR ID ====================
+@deliveryNoteId = {{createDeliveryNote.response.body.deliveryNote._id}}
+GET {{baseUrl}}/deliverynote/{{deliveryNoteId}}
+Authorization: Bearer {{loginToken}}
+
+### ==================== 22. ALBARANES - FIRMAR (REQUIERE ARCHIVO) ====================
+### ⚠️ NECESITAS UN ARCHIVO DE IMAGEN LLAMADO "firma.png" EN LA MISMA CARPETA
+PATCH {{baseUrl}}/deliverynote/{{deliveryNoteId}}/sign
+Authorization: Bearer {{loginToken}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="signature"; filename="firma.png"
+Content-Type: image/png
+
+< ./firma.png
+------WebKitFormBoundary--
+
+### ==================== 23. ALBARANES - DESCARGAR PDF ====================
+GET {{baseUrl}}/deliverynote/pdf/{{deliveryNoteId}}
+Authorization: Bearer {{loginToken}}
+
+### ==================== 24. REFRESH TOKEN ====================
+POST {{baseUrl}}/user/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{loginRefreshToken}}"
+}
+
+### ==================== 25. LOGOUT ====================
+POST {{baseUrl}}/user/logout
+Authorization: Bearer {{loginToken}}
+Content-Type: application/json
+
+{
+  "refreshToken": "{{loginRefreshToken}}"
+}
+
+### ==================== 26. SOFT DELETE USUARIO ====================
+DELETE {{baseUrl}}/user?soft=true
+Authorization: Bearer {{loginToken}}
+
+### ==================== 27. SWAGGER DOCUMENTACIÓN ====================
+GET http://localhost:3000/api-docs
