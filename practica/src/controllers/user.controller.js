@@ -5,6 +5,7 @@ import { hashPassword, verifyPassword, generateVerificationCode } from '../utils
 import { generateAccessToken, generateRefreshToken, storeRefreshToken, getRefreshToken, revokeRefreshToken, revokeAllUserTokens } from '../utils/jwt.js';
 import { notificationService } from '../services/notification.service.js';
 import { config } from '../config/index.js';
+import { sendVerificationEmail } from '../services/mail.service.js';
 
 // 1. Registro de usuario
 export const register = async (req, res, next) => {
@@ -25,6 +26,14 @@ export const register = async (req, res, next) => {
       verificationCode,
       verificationAttempts: 3
     });
+
+    // Enviar email de verificación
+    try {
+      await sendVerificationEmail(user.email, verificationCode);
+    } catch (emailError) {
+      console.error('Error enviando email de verificación:', emailError.message);
+      // No lanzamos error, el usuario se crea igual
+    }
 
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken();
