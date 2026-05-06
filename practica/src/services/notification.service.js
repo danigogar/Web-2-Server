@@ -4,6 +4,11 @@ class NotificationService extends EventEmitter {
   constructor() {
     super();
     this.setupListeners();
+    this.io = null;
+  }
+
+  setIo(io) {
+    this.io = io;
   }
 
   setupListeners() {
@@ -22,6 +27,30 @@ class NotificationService extends EventEmitter {
     this.on('user:deleted', (data) => {
       console.log(`🗑️ [EVENT] user:deleted - ${data.email} (soft: ${data.soft})`);
     });
+
+    this.on('client:new', (data) => {
+      console.log(`🏢 [EVENT] client:new - ${data.name} (${data._id})`);
+    });
+
+    this.on('project:new', (data) => {
+      console.log(`📋 [EVENT] project:new - ${data.name} (${data._id})`);
+    });
+
+    this.on('deliverynote:new', (data) => {
+      console.log(`📄 [EVENT] deliverynote:new - ${data._id} (formato: ${data.format})`);
+    });
+
+    this.on('deliverynote:signed', (data) => {
+      console.log(`✍️ [EVENT] deliverynote:signed - ${data._id}`);
+    });
+  }
+
+  emitToCompany(companyId, event, data) {
+    const companyRoom = `company:${companyId}`;
+    this.emit(event, data);
+    if (this.io) {
+      this.io.to(companyRoom).emit(event, data);
+    }
   }
 
   emitUserRegistered(user) {
@@ -56,6 +85,22 @@ class NotificationService extends EventEmitter {
       soft,
       timestamp: new Date()
     });
+  }
+
+  emitClientCreated(client, companyId) {
+    this.emitToCompany(companyId, 'client:new', client);
+  }
+
+  emitProjectCreated(project, companyId) {
+    this.emitToCompany(companyId, 'project:new', project);
+  }
+
+  emitDeliveryNoteCreated(deliveryNote, companyId) {
+    this.emitToCompany(companyId, 'deliverynote:new', deliveryNote);
+  }
+
+  emitDeliveryNoteSigned(deliveryNote, companyId) {
+    this.emitToCompany(companyId, 'deliverynote:signed', deliveryNote);
   }
 }
 
