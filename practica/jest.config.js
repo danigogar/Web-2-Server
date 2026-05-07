@@ -1,7 +1,6 @@
 ﻿export default {
   testEnvironment: 'node',
   transform: {},
-  extensionsToTreatAsEsm: ['.js'],
   setupFilesAfterEnv: ['./tests/setup.js'],
   coverageThreshold: {
     global: {
