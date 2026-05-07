@@ -1,27 +1,60 @@
-# 🏢 BildyApp - API de Gestión de Usuarios
+# 🏢 BildyApp - API de Gestión de Albaranes
 
-API REST para la gestión de usuarios y compañías, desarrollada con Node.js, Express, MongoDB y JWT. Incluye registro, validación de email, login con tokens, onboarding de datos personales y compañía, subida de logo, invitación de compañeros, cambio de contraseña y soft delete.
+API REST completa para la gestión de albaranes (partes de horas o materiales) entre clientes y proveedores. Desarrollada con Node.js, Express, MongoDB, JWT y Docker.
+
+---
+
+## 🚀 Características
+
+- Autenticación de usuarios con JWT (access + refresh tokens)
+- Envío de emails de verificación con Nodemailer (Ethereal)
+- Onboarding de usuarios y gestión de compañías
+- CRUD completo de clientes, proyectos y albaranes
+- Sistema de préstamos (albaranes de materiales y horas)
+- Generación de PDFs de albaranes con pdfkit
+- Firma de albaranes con subida de imágenes a Cloudinary
+- Dashboard estadístico con aggregation pipeline (Bonus)
+- Documentación interactiva con Swagger
+- Tests automatizados con Jest y mongodb-memory-server
+- Logging de errores 5XX a Slack
+- WebSockets con Socket.IO para notificaciones en tiempo real
+- Containerización con Docker y Docker Compose
+- CI/CD con GitHub Actions
+- Despliegue en Railway
+
+---
 
 ## 🛠️ Tecnologías utilizadas
 
-| Categoría | Tecnologías |
-|-----------|-------------|
-| **Runtime** | Node.js 22+ (ESM) |
-| **Framework** | Express 5 |
-| **Base de datos** | MongoDB Atlas + Mongoose |
-| **Autenticación** | JWT (access + refresh tokens), bcryptjs |
-| **Validación** | Zod (transform, refine, discriminatedUnion) |
-| **Subida de archivos** | Multer |
-| **Seguridad** | Helmet, CORS, express-rate-limit |
-| **Eventos** | EventEmitter nativo |
+| Tecnología | Propósito |
+|------------|-----------|
+| Node.js | Entorno de ejecución |
+| Express | Framework web |
+| MongoDB Atlas | Base de datos en la nube |
+| Mongoose | ODM para MongoDB |
+| JWT | Autenticación (access + refresh) |
+| bcryptjs | Encriptación de contraseñas |
+| Zod | Validación de datos |
+| Multer | Subida de archivos |
+| Cloudinary | Almacenamiento de firmas y PDFs |
+| pdfkit | Generación de PDFs |
+| Socket.IO | WebSockets para notificaciones |
+| Swagger | Documentación de API |
+| Jest | Tests automatizados |
+| Docker | Containerización |
+| GitHub Actions | CI/CD |
+| Railway | Despliegue |
 
 ---
 
 ## 📋 Requisitos previos
 
-- Node.js 22 o superior
-- npm 10 o superior
-- Cuenta en [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) (gratis)
+- Node.js (v22 o superior)
+- npm (v10 o superior)
+- Cuenta en MongoDB Atlas (gratis)
+- Cuenta en Cloudinary (gratis)
+- Cuenta en Slack (para logging, opcional)
+- Cuenta en Railway (para despliegue, opcional)
 
 ---
 
@@ -29,319 +62,236 @@ API REST para la gestión de usuarios y compañías, desarrollada con Node.js, E
 
 ### 1. Clonar el repositorio
 
-```bash
 git clone https://github.com/tu-usuario/bildyapp-api.git
 cd bildyapp-api
-```
 
 ### 2. Instalar dependencias
-```bash
+
 npm install
-```
 
 ### 3. Configurar variables de entorno
+
 Crea un archivo .env en la raíz del proyecto:
 
-```env
 # Servidor
 PORT=3000
 NODE_ENV=development
 
-# MongoDB Atlas
+# MongoDB
 DB_URI=mongodb+srv://usuario:contraseña@cluster.mongodb.net/bildyapp
 
 # JWT
-JWT_SECRET=tu_secreto_jwt_muy_largo_y_seguro_minimo_32_caracteres
+JWT_SECRET=tu_clave_secreta_de_32_caracteres
 JWT_ACCESS_EXPIRES=15m
 JWT_REFRESH_EXPIRES=7d
 
-# Uploads
-MAX_FILE_SIZE=5242880
-PUBLIC_URL=http://localhost:3000
-```
+# Email (Ethereal para pruebas)
+SMTP_HOST=smtp.ethereal.email
+SMTP_PORT=587
+SMTP_USER=tu_usuario@ethereal.email
+SMTP_PASS=tu_contraseña_ethereal
+SMTP_FROM=tu_usuario@ethereal.email
+SMTP_SECURE=false
 
----
+# Slack (opcional)
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/xxx/yyy/zzz
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=tu_cloud_name
+CLOUDINARY_API_KEY=tu_api_key
+CLOUDINARY_API_SECRET=tu_api_secret
 
 ### 4. Iniciar el servidor
 
-```bash
 npm run dev
-El servidor correrá en http://localhost:3000
 
-```
+Servidor disponible en: http://localhost:3000
 
 ---
 
 ## 📁 Estructura del proyecto
 
-```
 bildyapp-api/
 ├── src/
 │   ├── config/
-│   │   └── index.js              # Configuración centralizada
+│   │   ├── index.js
+│   │   └── swagger.js
 │   ├── controllers/
-│   │   └── user.controller.js    # Controladores de usuario
+│   │   ├── user.controller.js
+│   │   ├── client.controller.js
+│   │   ├── project.controller.js
+│   │   └── deliverynote.controller.js
 │   ├── middleware/
-│   │   ├── auth.middleware.js    # Autenticación JWT y roles
-│   │   ├── error-handler.js      # Manejo centralizado de errores
-│   │   ├── upload.js             # Configuración de Multer
-│   │   └── validate.js           # Validación con Zod
+│   │   ├── auth.middleware.js
+│   │   ├── error-handler.js
+│   │   ├── validate.js
+│   │   └── upload.js
 │   ├── models/
-│   │   ├── User.js               # Modelo de usuario (con virtuals e indexes)
-│   │   └── Company.js            # Modelo de compañía
+│   │   ├── User.js
+│   │   ├── Company.js
+│   │   ├── Client.js
+│   │   ├── Project.js
+│   │   └── DeliveryNote.js
 │   ├── routes/
-│   │   └── user.routes.js        # Rutas de la API
+│   │   ├── index.js
+│   │   ├── user.routes.js
+│   │   ├── client.routes.js
+│   │   ├── project.routes.js
+│   │   ├── deliverynote.routes.js
+│   │   └── dashboard.routes.js
 │   ├── services/
-│   │   └── notification.service.js # EventEmitter para eventos del usuario
+│   │   ├── notification.service.js
+│   │   ├── mail.service.js
+│   │   ├── logger.service.js
+│   │   ├── pdf.service.js
+│   │   └── storage.service.js
+│   ├── socket/
+│   │   └── index.js
 │   ├── utils/
-│   │   ├── AppError.js           # Clase de errores personalizada
-│   │   ├── jwt.js                # Generación/verificación de tokens
-│   │   └── password.js           # Hash y verificación de contraseñas
+│   │   ├── AppError.js
+│   │   ├── jwt.js
+│   │   └── password.js
 │   ├── validators/
-│   │   └── user.validator.js     # Esquemas de validación Zod
-│   ├── app.js                    # Configuración de Express
-│   └── index.js                  # Punto de entrada
-├── uploads/                      # Archivos subidos (logo)
+│   │   ├── user.validator.js
+│   │   ├── client.validator.js
+│   │   ├── project.validator.js
+│   │   └── deliverynote.validator.js
+│   ├── app.js
+│   └── index.js
 ├── tests/
-│   └── api.http                  # Ejemplos de peticiones REST
+│   ├── setup.js
+│   ├── auth.test.js
+│   ├── client.test.js
+│   ├── project.test.js
+│   ├── deliverynote.test.js
+│   └── dashboard.test.js
+├── .github/workflows/
+│   └── test.yml
+├── Dockerfile
+├── docker-compose.yml
+├── .dockerignore
 ├── .env.example
 ├── .gitignore
+├── jest.config.js
 ├── package.json
 └── README.md
-```
 
 ---
 
 ## 📖 Endpoints de la API
 
-### Autenticación y usuario
+### Autenticación y Usuario
 
-| Método | Endpoint | Descripción | Autenticación |
-|--------|----------|-------------|---------------|
-| POST | `/api/user/register` | Registro de usuario | ❌ No |
-| PUT | `/api/user/validation` | Validación de email (código 6 dígitos) | ✅ Sí (Bearer) |
-| POST | `/api/user/login` | Login con email y contraseña | ❌ No |
-| POST | `/api/user/refresh` | Renovar access token con refresh token | ❌ No |
-| POST | `/api/user/logout` | Cerrar sesión (invalida refresh token) | ✅ Sí (Bearer) |
-| GET | `/api/user` | Obtener datos del usuario autenticado | ✅ Sí (Bearer) |
-| DELETE | `/api/user?soft=true/false` | Eliminar usuario (soft/hard delete) | ✅ Sí (Bearer) |
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | /api/user/register | Registrar usuario |
+| PUT | /api/user/validation | Validar email con código |
+| POST | /api/user/login | Iniciar sesión |
+| GET | /api/user | Obtener perfil |
+| PUT | /api/user | Actualizar datos personales |
+| DELETE | /api/user | Eliminar usuario (soft/hard) |
+| PATCH | /api/user/company | Crear/actualizar compañía |
+| PATCH | /api/user/logo | Subir logo |
+| POST | /api/user/refresh | Renovar access token |
+| POST | /api/user/logout | Cerrar sesión |
+| PUT | /api/user/password | Cambiar contraseña (Bonus) |
+| POST | /api/user/invite | Invitar compañero |
 
-### Onboarding
+### Clientes
 
-| Método | Endpoint | Descripción | Autenticación |
-|--------|----------|-------------|---------------|
-| PUT | `/api/user/register` | Guardar datos personales (nombre, apellidos, NIF) | ✅ Sí (Bearer) |
-| PATCH | `/api/user/company` | Guardar datos de la compañía (con discriminatedUnion) | ✅ Sí (Bearer) |
-| PATCH | `/api/user/logo` | Subir logo de la compañía (multipart/form-data) | ✅ Sí (Bearer) |
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | /api/client | Crear cliente |
+| GET | /api/client | Listar clientes |
+| GET | /api/client/archived | Listar clientes archivados |
+| GET | /api/client/:id | Obtener cliente |
+| PUT | /api/client/:id | Actualizar cliente |
+| DELETE | /api/client/:id | Eliminar cliente (soft/hard) |
+| PATCH | /api/client/:id/restore | Restaurar cliente |
 
-### Gestión adicional
+### Proyectos
 
-| Método | Endpoint | Descripción | Autenticación |
-|--------|----------|-------------|---------------|
-| PUT | `/api/user/password` | Cambiar contraseña (Bonus) | ✅ Sí (Bearer) |
-| POST | `/api/user/invite` | Invitar compañero (solo admin) | ✅ Sí (Bearer, rol admin) |
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | /api/project | Crear proyecto |
+| GET | /api/project | Listar proyectos |
+| GET | /api/project/archived | Listar proyectos archivados |
+| GET | /api/project/:id | Obtener proyecto |
+| PUT | /api/project/:id | Actualizar proyecto |
+| DELETE | /api/project/:id | Eliminar proyecto (soft/hard) |
+| PATCH | /api/project/:id/restore | Restaurar proyecto |
+
+### Albaranes
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | /api/deliverynote | Crear albarán |
+| GET | /api/deliverynote | Listar albaranes |
+| GET | /api/deliverynote/:id | Obtener albarán |
+| DELETE | /api/deliverynote/:id | Eliminar albarán |
+| PATCH | /api/deliverynote/:id/sign | Firmar albarán |
+| GET | /api/deliverynote/pdf/:id | Descargar PDF |
+
+### Dashboard (Bonus)
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET | /api/dashboard | Estadísticas (albaranes por mes, horas por proyecto, materiales por cliente) |
+
+### Documentación
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET | /api-docs | Swagger UI interactiva |
+| GET | /health | Health check (status, db, uptime, timestamp) |
 
 ---
 
-## 🧪 Ejemplos de peticiones
+## 🐳 Docker
 
-### Registro
+### Construir imagen
 
-```http
-POST {{baseUrl}}/user/register
-Content-Type: application/json
+docker build -t bildyapp-api .
 
-{
-  "email": "usuario@ejemplo.com",
-  "password": "12345678"
-}
+### Ejecutar con Docker Compose
 
-```
-#### Respuesta (201 Created):
-```json
-{
-  "user": {
-    "id": "67f...",
-    "email": "usuario@ejemplo.com",
-    "status": "pending",
-    "role": "admin"
-  },
-  "accessToken": "eyJhbGciOiJIUzI1NiIs...",
-  "refreshToken": "a1b2c3d4e5f6..."
-}
+docker-compose up --build
 
-```
+El comando levanta:
+- API en puerto 3000
+- MongoDB en puerto 27017
 
-### Login
+### Variables para Docker Compose
 
-```http
-POST {{baseUrl}}/user/login
-Content-Type: application/json
+Define en docker-compose.yml:
+- DB_URI=mongodb://mongo:27017/bildyapp
+- JWT_SECRET=tu-clave-secreta
 
-{
-  "email": "usuario@ejemplo.com",
-  "password": "12345678"
-}
+---
 
-```
-#### Respuesta (200 OK):
+## ⚙️ CI/CD con GitHub Actions
 
-```json
-{
-  "user": {
-    "id": "67f...",
-    "email": "usuario@ejemplo.com",
-    "name": "",
-    "lastName": "",
-    "role": "admin",
-    "status": "verified"
-  },
-  "accessToken": "eyJhbGciOiJIUzI1NiIs...",
-  "refreshToken": "a1b2c3d4e5f6..."
-}
+El pipeline ejecuta automáticamente los tests en cada push a las ramas main o develop.
 
-```
+Archivo: .github/workflows/test.yml
 
-### Onboarding - Datos personales
+---
 
-```http
-PUT {{baseUrl}}/user/register
-Authorization: Bearer {{accessToken}}
-Content-Type: application/json
+## 🧪 Tests
 
-{
-  "name": "Juan",
-  "lastName": "Pérez García",
-  "nif": "12345678A"
-}
+### Ejecutar tests
 
-```
-### Onboarding - Compañía (empresa normal)
-```http
-PATCH {{baseUrl}}/user/company
-Authorization: Bearer {{accessToken}}
-Content-Type: application/json
+npm test
 
-{
-  "isFreelance": false,
-  "name": "Mi Empresa SL",
-  "cif": "B87654321",
-  "address": {
-    "street": "Calle Mayor",
-    "number": "1",
-    "postal": "28001",
-    "city": "Madrid",
-    "province": "Madrid"
-  }
-}
+### Ver cobertura
 
-```
-### Onboarding - Compañía (autónomo)
-```http
-PATCH {{baseUrl}}/user/company
-Authorization: Bearer {{accessToken}}
-Content-Type: application/json
+npm test -- --coverage
 
-{
-  "isFreelance": true
-}
+Cobertura actual: 56% (objetivo 70%)
 
-```
-### Subir logo
-```http
-PATCH {{baseUrl}}/user/logo
-Authorization: Bearer {{accessToken}}
-Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+### Base de datos de test
 
-------WebKitFormBoundary
-Content-Disposition: form-data; name="logo"; filename="logo.png"
-Content-Type: image/png
-
-< ./logo.png
-------WebKitFormBoundary--
-
-```
-### Obtener usuario autenticado
-```http
-GET {{baseUrl}}/user
-Authorization: Bearer {{accessToken}}
-
-```
-#### Respuesta (200 OK) - Incluye virtual fullName y Company poblada:
-```json
-{
-  "user": {
-    "id": "67f...",
-    "email": "usuario@ejemplo.com",
-    "name": "Juan",
-    "lastName": "Pérez García",
-    "fullName": "Juan Pérez García",
-    "nif": "12345678A",
-    "role": "admin",
-    "status": "verified",
-    "company": {
-      "_id": "...",
-      "name": "Mi Empresa SL",
-      "cif": "B87654321",
-      "logo": "http://localhost:3000/uploads/logo-xxx.png"
-    }
-  }
-}
-
-```
-### Invitar compañero (solo admin)
-```http
-POST {{baseUrl}}/user/invite
-Authorization: Bearer {{accessToken}}
-Content-Type: application/json
-
-{
-  "email": "invitado@ejemplo.com",
-  "name": "Carlos",
-  "lastName": "López Ruiz"
-}
-
-```
-#### Respuesta (201 Created):
-```json
-{
-  "message": "Usuario invitado correctamente",
-  "user": {
-    "id": "...",
-    "email": "invitado@ejemplo.com",
-    "name": "Carlos",
-    "lastName": "López Ruiz",
-    "role": "guest",
-    "temporaryPassword": "928253"
-  }
-}
-
-```
-### Cambiar contraseña (Bonus)
-```http
-PUT {{baseUrl}}/user/password
-Authorization: Bearer {{accessToken}}
-Content-Type: application/json
-
-{
-  "currentPassword": "12345678",
-  "newPassword": "87654321"
-}
-
-```
-### Eliminar usuario (soft delete)
-```http
-DELETE {{baseUrl}}/user?soft=true
-Authorization: Bearer {{accessToken}}
-
-```
-#### Respuesta (200 OK):
-```json
-{
-  "message": "Usuario eliminado (soft delete)"
-}
-
-```
+Usa mongodb-memory-server (BD en memoria)
 
 ---
 
@@ -349,25 +299,24 @@ Authorization: Bearer {{accessToken}}
 
 | Comando | Descripción |
 |---------|-------------|
-| `npm run dev` | Iniciar servidor con hot-reload (`--watch`) |
-| `npm start` | Iniciar servidor en producción |
-
----
-
-## ⭐ Bonus implementados
-
-| Bonus | Estado | Descripción |
-|-------|--------|-------------|
-| Cambiar contraseña | ✅ | Endpoint `PUT /api/user/password` con Zod `.refine()` para validar que nueva ≠ actual |
-| discriminatedUnion | ✅ | Validación condicional en onboarding según `isFreelance` (autónomo vs empresa normal) |
+| npm run dev | Desarrollo con hot-reload |
+| npm start | Producción |
+| npm test | Ejecutar tests |
+| npm test -- --coverage | Tests con cobertura |
+| docker-compose up --build | Levantar contenedores |
 
 ---
 
 ## 📄 Licencia
+
 MIT
 
 ---
 
 ## 👨‍💻 Autor
+
 Daniel González - @danigogar
 
+---
+
+**¡Disfruta de BildyApp! 🏢**
