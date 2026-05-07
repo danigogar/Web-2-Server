@@ -34,12 +34,11 @@ coverage/
 .git
 .gitignore
 
-# Documentación
-README.md
+# Documentación (solo ignorar otros .md, no README)
 *.md
 !README.md
 
-# Docker
+# Docker (no incluir Dockerfile en la imagen)
 Dockerfile
 docker-compose*.yml
 .dockerignore
