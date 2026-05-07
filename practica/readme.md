@@ -348,7 +348,7 @@ GET {{baseUrl}}/deliverynote/pdf/:id
 Authorization: Bearer {{accessToken}}
 ```
 
-💡 **Tip:** Usa el archivo `tests/api.http` con la extensión *REST Client* de VS Code para ejecutar todas las peticiones con un solo clic.
+💡 **Tip:** Usa los archivos de `tests/` con la extensión *REST Client* de VS Code para ejecutar todas las peticiones con un solo clic.
 
 ---
 
@@ -403,8 +403,6 @@ npm test
 ```bash
 npm test -- --coverage
 ```
-
-> Cobertura actual: **56%** (objetivo 70%)
 
 Usa `mongodb-memory-server` — no necesita MongoDB instalado localmente.
 
