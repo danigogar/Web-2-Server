@@ -11,6 +11,9 @@ process.env.NODE_ENV = 'test';
 // Usar JWT_SECRET del .env, o si no existe, usar una por defecto
 process.env.JWT_SECRET = process.env.JWT_SECRET || 'test-secret-key-for-jwt-32-chars-long-here';
 
+// El timeout se configura en jest.config.js mediante `testTimeout`.
+// En modo ESM (--experimental-vm-modules) el global `jest` no está disponible aquí.
+
 let mongod;
 
 beforeAll(async () => {

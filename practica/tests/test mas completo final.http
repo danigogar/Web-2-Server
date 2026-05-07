@@ -1,6 +1,6 @@
 ### ==================== VARIABLES ====================
 @baseUrl = http://localhost:3000/api
-@userEmail = test7@ethereal.test
+@userEmail = test9@ethereal.test
 @userPassword = 12345678
 
 ### ==================== 1. HEALTH CHECK ====================
@@ -28,7 +28,7 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "code": "255448"
+  "code": "559934"
 }
 
 ### ==================== 5. LOGIN ====================
@@ -78,9 +78,9 @@ Content-Type: application/json
 
 {
   "name": "Cliente Ejemplo SL",
-  "cif": "B87654322",
+  "cif": "B87654324",
   "email": "cliente@ejemplo.com",
-  "phone": "600123456",
+  "phone": "600123457",
   "address": {
     "street": "Calle Mayor",
     "number": "1",
@@ -118,7 +118,7 @@ Content-Type: application/json
 {
   "clientId": "{{clientId}}",
   "name": "Proyecto Ejemplo",
-  "projectCode": "PROJ002",
+  "projectCode": "PROJ004",
   "email": "proyecto@ejemplo.com",
   "notes": "Proyecto de prueba",
   "active": true
