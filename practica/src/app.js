@@ -16,21 +16,10 @@ import { setupSocket } from './socket/index.js';
 import { logToSlack } from './services/logger.service.js';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpecs } from './config/swagger.js';
+import routes from './routes/index.js';
+
 
 const app = express();
-
-// Conexión a MongoDB
-try {
-  await mongoose.connect(config.dbUri);
-  console.log('✅ Conectado a MongoDB Atlas');
-} catch (error) {
-  console.error('❌ Error conectando a MongoDB:', error.message);
-  process.exit(1);
-}
-
-mongoose.connection.on('disconnected', () => {
-  console.warn('⚠️ Desconectado de MongoDB');
-});
 
 // Seguridad
 app.use(helmet());
@@ -48,9 +37,28 @@ app.use(express.urlencoded({ extended: true }));
 const uploadsPath = path.join(process.cwd(), 'uploads');
 app.use('/uploads', express.static(uploadsPath));
 
+// Añadido temporalmente para Prueba de Slack Errors (Comprobado, funciona y envía reporte en canal)
+/*
+app.get('/test-slack', (req, res) => {
+  throw new Error('Error de prueba para Slack');
+});
+*/
+
 // Health check
-app.get('/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+app.get('/health', async (req, res) => {
+  let dbStatus = 'disconnected';
+  
+  // Verificar conexión a MongoDB
+  if (mongoose.connection && mongoose.connection.readyState === 1) {
+    dbStatus = 'connected';
+  }
+
+  res.json({
+    status: 'ok',
+    db: dbStatus,
+    uptime: Math.floor(process.uptime()),
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Rutas de la API
@@ -58,6 +66,8 @@ app.use('/api/user', userRoutes);
 app.use('/api/client', clientRoutes);
 app.use('/api/project', projectRoutes);
 app.use('/api/deliverynote', deliveryNoteRoutes);
+app.use('/api', routes);
+
 
 // Documentación Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
@@ -71,6 +81,7 @@ app.use(async (err, req, res, next) => {
   next(err);
 });
 app.use(errorHandler);
+
 
 // Crear servidor HTTP y configurar Socket.IO
 const httpServer = createServer(app);
