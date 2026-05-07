@@ -1,6 +1,37 @@
-﻿node_modules/
+﻿# Dependencias
+node_modules/
+
+# Variables de entorno
 .env
-dist/
+.env.*
+!.env.example
+
+# Bases de datos locales
+*.db
+*.db-journal
+
+# Logs
+logs/
 *.log
+
+# Sistema operativo
 .DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Tests
+coverage/
+.nyc_output
+
+# Archivos subidos
 uploads/
+
+# Archivos temporales
+dist/
+*.tmp
+temp/

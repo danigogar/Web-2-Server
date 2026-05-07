@@ -1,13 +1,19 @@
 ﻿import mongoose from 'mongoose';
 import { AppError } from '../utils/AppError.js';
 import { config } from '../config/index.js';
+import { logToSlack } from '../services/logger.service.js';
 
 export const notFound = (req, res, next) => {
   next(AppError.notFound(`Ruta ${req.method} ${req.originalUrl}`));
 };
 
-export const errorHandler = (err, req, res, next) => {
+export const errorHandler = async (err, req, res, next) => {
   console.error('❌ Error:', err);
+
+  // Enviar a Slack solo errores 5XX (no operacionales)
+  if (err.statusCode >= 500 || (!err.statusCode && !err.isOperational)) {
+    await logToSlack(err, req);
+  }
 
   // Error operacional (esperado)
   if (err.isOperational) {

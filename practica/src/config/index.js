@@ -9,13 +9,15 @@
   publicUrl: process.env.PUBLIC_URL || 'http://localhost:3000'
 };
 
-// Validar variables críticas
-if (!config.dbUri) {
-  console.error('❌ DB_URI no está definida en .env');
-  process.exit(1);
-}
+// Validar variables críticas (saltar en entorno de test)
+if (process.env.NODE_ENV !== 'test') {
+  if (!config.dbUri) {
+    console.error('❌ DB_URI no está definida en .env');
+    process.exit(1);
+  }
 
-if (!config.jwtSecret) {
-  console.error('❌ JWT_SECRET no está definida en .env');
-  process.exit(1);
+  if (!config.jwtSecret) {
+    console.error('❌ JWT_SECRET no está definida en .env');
+    process.exit(1);
+  }
 }
