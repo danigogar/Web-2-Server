@@ -53,7 +53,9 @@ export const getClientById = async (req, res, next) => {
   try {
     const { id } = req.params;
     const companyId = req.user.company._id;
-    const client = await Client.findOne({ _id: id, company: companyId });
+    // Filtramos por deleted: false para que un cliente archivado no se devuelva
+    // por acceso directo a su URL. El acceso a archivados va por GET /api/client/archived.
+    const client = await Client.findOne({ _id: id, company: companyId, deleted: false });
     if (!client) throw AppError.notFound('Cliente no encontrado');
     res.json({ client });
   } catch (error) { next(error); }
