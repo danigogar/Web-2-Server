@@ -13,7 +13,6 @@ import { notFound, errorHandler } from './middleware/error-handler.js';
 import { limiter } from './middleware/rate-limit.js';
 import { sanitizeBodyOnly } from './middleware/sanitize.js';
 import { setupSocket } from './socket/index.js';
-import { logToSlack } from './services/logger.service.js';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpecs } from './config/swagger.js';
 import routes from './routes/index.js';
@@ -37,17 +36,10 @@ app.use(express.urlencoded({ extended: true }));
 const uploadsPath = path.join(process.cwd(), 'uploads');
 app.use('/uploads', express.static(uploadsPath));
 
-// Añadido temporalmente para Prueba de Slack Errors (Comprobado, funciona y envía reporte en canal)
-/*
-app.get('/test-slack', (req, res) => {
-  throw new Error('Error de prueba para Slack');
-});
-*/
-
 // Health check
 app.get('/health', async (req, res) => {
   let dbStatus = 'disconnected';
-  
+
   // Verificar conexión a MongoDB
   if (mongoose.connection && mongoose.connection.readyState === 1) {
     dbStatus = 'connected';
@@ -72,14 +64,11 @@ app.use('/api', routes);
 // Documentación Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
-// Middleware de manejo de errores con Slack
+// Manejo de errores: notFound captura rutas inexistentes,
+// errorHandler centraliza la respuesta JSON Y el envío a Slack.
+// (Antes había un middleware intermedio que también llamaba a logToSlack
+//  para errores 5xx no operacionales, lo que producía doble notificación.)
 app.use(notFound);
-app.use(async (err, req, res, next) => {
-  if (err.statusCode >= 500 && !err.isOperational) {
-    await logToSlack(err, req);
-  }
-  next(err);
-});
 app.use(errorHandler);
 
 
